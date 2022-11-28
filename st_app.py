@@ -15,7 +15,12 @@ df = get_data()
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-    return spacy.load('en_core_web_md')
+    try:
+        nlp = spacy.load('en_core_web_md')
+    except:
+        spacy.cli.download("en_core_web_md")
+        nlp = spacy.load('en_core_web_md')
+    return nlp
 nlp = load_model()
 
 semantic_search = SemanticSearch(df, nlp)
