@@ -9,6 +9,8 @@ import streamlit as st
 from stqdm import stqdm
 stqdm.pandas()
 
+nltk.download('punkt')
+
 if not os.path.isdir('serialized_data'):
     os.mkdir('serialized_data')
 
