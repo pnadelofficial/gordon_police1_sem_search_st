@@ -27,7 +27,7 @@ semantic_search = SemanticSearch(df, nlp)
 
 @st.cache(allow_output_mutation=True)
 def spacyify():
-    semantic_search.spacyify('sents')
+    semantic_search.spacyify('sents', streamlit=True)
 spacyify()
 
 entries = st.number_input('Choose number of excerpts.', min_value=1, value=5)
