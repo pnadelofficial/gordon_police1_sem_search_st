@@ -25,6 +25,11 @@ nlp = load_model()
 
 semantic_search = SemanticSearch(df, nlp)
 
+@st.cache(allow_output_mutation=True)
+def spacyify():
+    semantic_search.spacyify('sents')
+spacyify()
+
 entries = st.number_input('Choose number of excerpts.', min_value=1, value=5)
 context_size = st.number_input('Choose context size (number of sentences before and after).', min_value=1, value=2)
 cols_to_display = st.text_input('Enter names of columns to be displayed', 'Title')

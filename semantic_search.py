@@ -72,7 +72,7 @@ class SemanticSearch():
             display(HTML(f'<p>{search_df.context.to_list()[i]}</p>'))
             display(HTML('<br>'))        
 
-    ###### OLD ###############
+    ###### SPACY ###############
 
     def spacyify(self,col_name,f_name='serialized_data/spacy_model_output', streamlit=False):
         texts = self.df[col_name].to_list()
