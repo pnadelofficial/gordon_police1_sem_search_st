@@ -25,7 +25,7 @@ nlp = load_model()
 
 semantic_search = SemanticSearch(df, nlp)
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def spacyify():
     semantic_search.spacyify('sents', streamlit=True)
 spacyify()
