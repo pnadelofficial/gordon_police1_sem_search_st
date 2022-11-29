@@ -31,7 +31,7 @@ semantic_search = SemanticSearch(df, nlp)
 def spacyify():
     semantic_search.spacyify('sents', streamlit=True)
 
-@st.cache
+@st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def get_docs():
     if not os.path.exists('serialized_data/spacy_model_output'):
         spacyify()
