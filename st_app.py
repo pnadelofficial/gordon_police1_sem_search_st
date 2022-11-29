@@ -37,9 +37,8 @@ def get_docs():
         spacyify()
     bytes_file = open('serialized_data/spacy_model_output','rb').read()
     doc_bin = DocBin().from_bytes(bytes_file)
-    docs = pd.Series(doc_bin.get_docs(nlp.vocab))
-    return docs
-docs = get_docs()
+    return doc_bin
+doc_bin = get_docs()
 
 entries = st.number_input('Choose number of excerpts.', min_value=1, value=5)
 context_size = st.number_input('Choose context size (number of sentences before and after).', min_value=1, value=2)
@@ -48,7 +47,7 @@ cols_to_display = st.text_input('Enter names of columns to be displayed', 'Title
 search_text = st.text_input('Search term', '')
 if search_text != '':
     search = semantic_search.search(
-        docs, 
+        doc_bin, 
         search_text, 
         entries=entries, 
         context_size=context_size,
