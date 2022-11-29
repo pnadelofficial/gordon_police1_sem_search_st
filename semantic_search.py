@@ -97,15 +97,13 @@ class SemanticSearch():
         f.write(bytes_data)
         f.close()
 
-    def search(self, doc_bin, search_text, entries=5, context_size=2, streamlit=False, **kwargs):
+    def search(self, docs, search_text, entries=5, context_size=2, streamlit=False, **kwargs):
         if ' ' in search_text:
             search_vec = self.nlp(search_text)
         else:
             search_vec = self.nlp.vocab[search_text]
-        
-        #bytes_file = doc_bin_open #open(doc_bin_path,'rb').read()
-        #doc_bin = DocBin().from_bytes(bytes_file)
-        docs = pd.Series(doc_bin.get_docs(self.nlp.vocab))
+
+        # docs = pd.Series(doc_bin.get_docs(self.nlp.vocab))
         sim = pd.DataFrame({'sents':self.df.sents.to_list(), 'sent_docs':docs.to_list()})
 
         if streamlit == True:
