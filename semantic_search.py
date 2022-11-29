@@ -5,6 +5,7 @@ import os
 from tqdm import tqdm
 from IPython.core.display import display, HTML
 import nltk
+nltk.download('punkt')
 import streamlit as st
 from stqdm import stqdm
 stqdm.pandas()
