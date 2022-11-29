@@ -2,6 +2,7 @@ import streamlit as st
 from semantic_search import SemanticSearch, sentence_tokenize
 import pandas as pd
 import spacy
+import os
 
 st.markdown('<h1>Police1 Semantic Search</h1>', unsafe_allow_html=True)
 st.markdown('<small>Assembled by Peter Nadel, Tufts University</small>', unsafe_allow_html=True)
@@ -28,7 +29,13 @@ semantic_search = SemanticSearch(df, nlp)
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def spacyify():
     semantic_search.spacyify('sents', streamlit=True)
-spacyify()
+
+@st.cache
+def get_spacyify(doc_bin_path):
+    if not os.path.exists(doc_bin_path):
+        spacyify()
+    return open(doc_bin_path,'rb').read()
+doc_bin_open = get_spacyify('serialized_data/spacy_model_output')
 
 entries = st.number_input('Choose number of excerpts.', min_value=1, value=5)
 context_size = st.number_input('Choose context size (number of sentences before and after).', min_value=1, value=2)
@@ -37,7 +44,7 @@ cols_to_display = st.text_input('Enter names of columns to be displayed', 'Title
 search_text = st.text_input('Search term', '')
 if search_text != '':
     search = semantic_search.search(
-        'serialized_data/spacy_model_output', 
+        doc_bin_open, 
         search_text, 
         entries=entries, 
         context_size=context_size,
