@@ -7,9 +7,12 @@ from IPython.core.display import display, HTML
 import nltk
 import streamlit as st
 from stqdm import stqdm
+from embetter.text import SentenceEncoder
+from sklearn.pipeline import make_pipeline 
 stqdm.pandas()
-
-nltk.download('punkt')
+import numpy as np
+from numpy import dot
+from numpy.linalg import norm
 
 if not os.path.isdir('serialized_data'):
     os.mkdir('serialized_data')
@@ -17,13 +20,60 @@ if not os.path.isdir('serialized_data'):
 def sentence_tokenize(df, col_name='text'):
     df['sents'] = df[col_name].apply(nltk.sent_tokenize)
     df_explode = df.explode('sents')
+    df_explode = df_explode.reset_index().rename(columns={'index':'org_index'})
+    # df_explode = df_explode[['org_index','sents']]
     return df_explode
+
+def cosine_sim(a, b):
+    return dot(a, b)/(norm(a)*norm(b))
 
 class SemanticSearch():
 
     def __init__(self, df, nlp) -> None:
         self.df = df
+        #self.model = SentenceEncoder(model)
         self.nlp = nlp
+    
+    def emb_pipeline(self):
+        emb_pipeline = (
+            self.model
+        )
+        return emb_pipeline
+
+    def embed_text(self, emb_pipeline):
+        embeddings = emb_pipeline.fit_transform(list(self.df['sents']))
+        return embeddings
+
+    def embedding_search(self, emb_pipeline, embeddings, search_text, entries=5, context_size=2, streamlit=False, **kwargs):
+        search_emb = emb_pipeline.fit_transform(search_text)
+        embeddings_df = pd.DataFrame(embeddings)
+        sim_scores = embeddings_df.apply(lambda x: cosine_sim(search_emb, np.array(x)), axis=1)
+        
+        res = self.df.iloc[sim_scores.sort_values(ascending=False).index[0:entries]]
+        res['sim_score'] = sim_scores.sort_values(ascending=False)[0:entries]
+
+        def create_context(org, context_size):
+            context = res.loc[res.org_index == org].sents.iloc[0] 
+            for i in range(context_size):
+                if (i < len(self.df)) and (i > 0):
+                    context = self.df.loc[self.df.org_index == org-i].sents.iloc[0] + '\n' + context
+                    context = context + '\n' + self.df.loc[self.df.org_index == org+i].sents.iloc[0]
+            return context
+        res['context'] = res['org_index'].apply(lambda x: create_context(x, context_size))
+
+        return res, search_text
+
+    def display_search(self, search_df, search_text):
+        display(HTML(f'<h2>{search_text}</h2>'))
+        display(HTML('<br>'))
+        for i in range(len(search_df)):
+            for col in search_df.columns[2:-1]:
+                display(HTML(f'<small><i>{col.title()}: {search_df[col].to_list()[i]}</i></small>'))
+            display(HTML(f'<small>Similarity Score: {round(search_df.sim_score.to_list()[i], 3)}</small>'))
+            display(HTML(f'<p>{search_df.context.to_list()[i]}</p>'))
+            display(HTML('<br>'))        
+
+    ###### OLD ###############
 
     def spacyify(self,col_name,f_name='serialized_data/spacy_model_output', streamlit=False):
         texts = self.df[col_name].to_list()
