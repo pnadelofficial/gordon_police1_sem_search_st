@@ -7,8 +7,6 @@ from IPython.core.display import display, HTML
 import nltk
 import streamlit as st
 from stqdm import stqdm
-from embetter.text import SentenceEncoder
-from sklearn.pipeline import make_pipeline 
 stqdm.pandas()
 import numpy as np
 from numpy import dot
