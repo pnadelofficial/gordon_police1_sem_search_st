@@ -32,13 +32,13 @@ def spacyify():
     semantic_search.spacyify('sents', streamlit=True)
 
 @st.cache
-def get_doc_bin(doc_bin_path):
-    if not os.path.exists(doc_bin_path):
+def get_doc_bin():
+    if not os.path.exists('serialized_data/spacy_model_output'):
         spacyify()
-    bytes_file = open(doc_bin_path,'rb').read()
+    bytes_file = open('serialized_data/spacy_model_output','rb').read()
     doc_bin = DocBin().from_bytes(bytes_file)
     return doc_bin
-doc_bin = get_doc_bin('serialized_data/spacy_model_output')
+doc_bin = get_doc_bin()
 
 entries = st.number_input('Choose number of excerpts.', min_value=1, value=5)
 context_size = st.number_input('Choose context size (number of sentences before and after).', min_value=1, value=2)
