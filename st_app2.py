@@ -2,14 +2,13 @@ import pandas as pd
 from numpy import dot
 from numpy.linalg import norm
 import streamlit as st
-from dadmatools.embeddings import get_embedding
 import nltk
 nltk.download('punkt')
 from stqdm import stqdm
 stqdm.pandas()
 
 from sentence_transformers import SentenceTransformer
-model_name = 'msmarco-MiniLM-L-6-v3'
+model_name = 'all-MiniLM-L6-v2'
 model = SentenceTransformer(model_name)
 
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
@@ -73,3 +72,6 @@ for i in range(entries):
         ,unsafe_allow_html=True
     )
     st.markdown('<hr>', unsafe_allow_html=True)
+
+import gc
+gc.collect()

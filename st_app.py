@@ -4,6 +4,7 @@ import pandas as pd
 import spacy
 import os
 from spacy.tokens import DocBin
+import pyarrow as pa
 
 st.markdown('<h1>Police1 Semantic Search</h1>', unsafe_allow_html=True)
 st.markdown('<small>Assembled by Peter Nadel, Tufts University</small>', unsafe_allow_html=True)
