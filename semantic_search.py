@@ -114,7 +114,7 @@ class SemanticSearch():
         
         if streamlit == True:
             for i, col in enumerate(list(kwargs.values())[0].split(',')):
-                sim_df[col] = sim_df['org_idx'].apply(lambda x: self.df[sentences['org_index'].iloc[x]][col.strip()])
+                sim_df[col] = sim_df['org_idx'].apply(lambda x: self.df.iloc[sentences['org_index'].iloc[x]][col.strip()])
         else:
             for key,value in kwargs.items():
                 sim_df[key] = sim_df['org_idx'].apply(lambda x: self.df[value].iloc[x])
