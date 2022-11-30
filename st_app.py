@@ -8,7 +8,7 @@ from spacy.tokens import DocBin
 st.markdown('<h1>Police1 Semantic Search</h1>', unsafe_allow_html=True)
 st.markdown('<small>Assembled by Peter Nadel, Tufts University</small>', unsafe_allow_html=True)
 
-@st.cache
+@st.experimental_memo
 def get_data():
     df = pd.read_csv('all_articles_2020_2022_11_15.csv').dropna().reset_index(drop=True)
     return df
@@ -26,7 +26,7 @@ nlp = load_model()
 
 semantic_search = SemanticSearch(df, nlp)
 
-@st.cache
+@st.experimental_memo
 def sentence_tokenize():
     return semantic_search.sentence_tokenize()
 sentences = sentence_tokenize()
