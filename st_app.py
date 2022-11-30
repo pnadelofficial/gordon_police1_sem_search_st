@@ -11,7 +11,6 @@ st.markdown('<small>Assembled by Peter Nadel, Tufts University</small>', unsafe_
 @st.cache
 def get_data():
     df = pd.read_csv('all_articles_2020_2022_11_15.csv').dropna().reset_index(drop=True)
-    df = sentence_tokenize(df)
     return df
 df = get_data()
 
@@ -26,6 +25,11 @@ def load_model():
 nlp = load_model()
 
 semantic_search = SemanticSearch(df, nlp)
+
+@st.cache
+def sentence_tokenize():
+    return semantic_search.sentence_tokenize()
+sentences = sentence_tokenize()
 
 @st.cache(allow_output_mutation=True, suppress_st_warning=True)
 def spacyify():
@@ -47,6 +51,7 @@ cols_to_display = st.text_input('Enter names of columns to be displayed', 'Title
 search_text = st.text_input('Search term', '')
 if search_text != '':
     search = semantic_search.search(
+        sentences,
         doc_bin, 
         search_text, 
         entries=entries, 
