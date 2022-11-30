@@ -1,5 +1,5 @@
 import streamlit as st
-from semantic_search import SemanticSearch, sentence_tokenize
+from semantic_search import SemanticSearch
 import pandas as pd
 import spacy
 import os
